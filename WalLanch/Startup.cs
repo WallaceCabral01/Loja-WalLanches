@@ -1,4 +1,9 @@
-﻿namespace WalLanches;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WalLanches.Context;
+using System;
+
+namespace WalLanches;
 
 public class Startup
 {
@@ -11,6 +16,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddDbContext<AppDbContext>(Options =>
+        Options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
         services.AddControllersWithViews();
     }
 
