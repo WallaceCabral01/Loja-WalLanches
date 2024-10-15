@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using WalLanches.Context;
 using System;
+using WalLanches.Repositories.Interfaces;
+using WalLanches.Repositories;
 
 namespace WalLanches;
 
@@ -18,6 +20,9 @@ public class Startup
     {
         services.AddDbContext<AppDbContext>(Options =>
         Options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddTransient<ILancheRepository, LancheRepository>();
+        services.AddTransient<ICategoriaRepositories, CategoriaRepository>();
 
         services.AddControllersWithViews();
     }
