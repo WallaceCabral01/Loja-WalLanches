@@ -1,6 +1,11 @@
-﻿namespace WalLanches.Repositories.Interfaces
+﻿using WalLanches.Models;
+
+namespace WalLanches.Repositories.Interfaces
 {
-    public interface Interface
+    public interface ILancheRepository
     {
+        IEnumerable<Lanche> lanches { get; }
+        IEnumerable<Lanche> LanchesPreferidos { get; }
+        Lanche GetLancheByld(int lancheId);
     }
 }

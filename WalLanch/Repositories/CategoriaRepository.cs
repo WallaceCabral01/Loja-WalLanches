@@ -1,6 +1,19 @@
-﻿namespace WalLanches.Repositories
+﻿using WalLanches.Context;
+using WalLanches.Models;
+using WalLanches.Repositories.Interfaces;
+
+namespace WalLanches.Repositories
 {
-    public class CategoriaRepository
+    public class CategoriaRepository : ICategoriaRepositories
     {
+        private readonly AppDbContext _context;
+
+        public CategoriaRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public IEnumerable<Categoria> categorias => _context.Categorias;
+
     }
 }
