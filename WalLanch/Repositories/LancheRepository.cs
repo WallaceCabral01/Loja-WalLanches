@@ -1,29 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using WalLanches.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using WalLanches.Context;
 using WalLanches.Models;
-using WalLanches.Repositories.Interfaces;
+
 
 namespace WalLanches.Repositories
-
 {
     public class LancheRepository : ILancheRepository
     {
-
         private readonly AppDbContext _context;
-
-
-
-        public LancheRepository(AppDbContext context)
+        public LancheRepository(AppDbContext contexto)
         {
-            _context = context;
+            _context = contexto;
         }
 
-        public IEnumerable<Lanche> lanches => _context.Lanches.Include(c => c.Categoria);
+        public IEnumerable<Lanche> Lanches => _context.Lanches.Include(c => c.Categoria);
 
-        public IEnumerable<Lanche> LanchesPreferidos => _context.Lanches.Where(p =>
-        p.IsLanchePreferido).Include(c => c.Categoria);
+        public IEnumerable<Lanche> LanchesPreferidos => _context.Lanches.
+                                   Where(l => l.IsLanchePreferido)
+                                  .Include(c => c.Categoria);
 
-        public Lanche GetLancheByld(int lancheId) => _context.Lanches.FirstOrDefault(p => p.LancheId == lancheId);
+        public Lanche GetLancheById(int lancheId)
+        {
+            return _context.Lanches.FirstOrDefault(l => l.LancheId == lancheId);
+        }
     }
-
 }

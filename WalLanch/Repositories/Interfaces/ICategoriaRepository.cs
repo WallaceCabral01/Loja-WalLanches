@@ -2,7 +2,7 @@
 
 namespace WalLanches.Repositories.Interfaces
 {
-    public interface ICategoriaRepositories
+    public interface ICategoriaRepository
     {
         IEnumerable<Categoria> categorias { get; }
     }
