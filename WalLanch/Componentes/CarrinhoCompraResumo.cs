@@ -20,7 +20,7 @@ namespace WalLanches.Componentes
             var carrinhoCompraMV = new CarrinhoDeCompraViewModel
             {
                 CarrinhoCompra = _carrinhoCompra,
-                CarrinhoCopmpraTotal = _carrinhoCompra.GetCarrinhoCompraTotal()
+                CarrinhoCompraTotal = _carrinhoCompra.GetCarrinhoCompraTotal()
             };
             return View(carrinhoCompraMV);
 
