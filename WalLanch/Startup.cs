@@ -4,6 +4,7 @@ using WalLanches.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WalLanches.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace WalLanches;
@@ -21,6 +22,9 @@ public class Startup
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
         services.AddTransient<ILancheRepository, LancheRepository>();
         services.AddTransient<ICategoriaRepository, CategoriaRepository>();
@@ -52,6 +56,7 @@ public class Startup
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthorization();
+        app.UseAuthentication();
         app.UseSession();
 
         app.UseEndpoints(endpoints =>
