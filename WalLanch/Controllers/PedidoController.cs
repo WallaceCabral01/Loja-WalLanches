@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WalLanches.Models;
 using WalLanches.Repositories;
 using WalLanches.Repositories.Interfaces;
@@ -16,12 +17,14 @@ namespace WalLanches.Controllers
             _carrinhoCompra = carrinhoCompra;
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Checkout()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Checkout(Pedido pedido)
         {
