@@ -33,6 +33,16 @@ public class Startup
         services.AddTransient<ICategoriaRepository, CategoriaRepository>();
         services.AddTransient<IPedidoRepository, PedidoRepository>();
         services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+        services.AddAuthorization(Options =>
+        {
+            Options.AddPolicy("Admin",
+                politica =>
+                {
+                    politica.RequireRole("Admin");
+
+
+                });
+        });
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped(Sp => CarrinhoCompra.GetCarrinho(Sp));
@@ -64,7 +74,7 @@ public class Startup
         seedUserRoleInitial.SeedRoles();
 
         //Cria os usuarios e atribui ao perfil
-        seedUserRoleInitial.SeedUser();
+        seedUserRoleInitial.SeedUsers();
 
         app.UseAuthorization();
         app.UseAuthentication();
