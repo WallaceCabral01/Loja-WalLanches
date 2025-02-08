@@ -5,6 +5,7 @@ using WalLanches.ViewModels;
 
 namespace WalLanches.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -17,6 +18,7 @@ namespace WalLanches.Controllers
             _signInManager = signInManager;
         }
 
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
             return View(new LoginViewModel()
@@ -25,6 +27,7 @@ namespace WalLanches.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
@@ -35,7 +38,9 @@ namespace WalLanches.Controllers
 
             if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+                var result = await _signInManager.PasswordSignInAsync(user,
+                    loginVM.Password, false, false);
+
                 if (result.Succeeded)
                 {
                     if (string.IsNullOrEmpty(loginVM.ReturnUrl))
@@ -47,13 +52,15 @@ namespace WalLanches.Controllers
             }
             ModelState.AddModelError("", "Falha ao realizar o login!!");
             return View(loginVM);
-        }
+        }//
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(LoginViewModel registroVM)
@@ -76,6 +83,7 @@ namespace WalLanches.Controllers
             }
             return View(registroVM);
         }
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -84,6 +92,11 @@ namespace WalLanches.Controllers
             HttpContext.User = null;
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

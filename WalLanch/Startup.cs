@@ -76,8 +76,9 @@ public class Startup
         //Cria os usuarios e atribui ao perfil
         seedUserRoleInitial.SeedUsers();
 
-        app.UseAuthorization();
+       
         app.UseAuthentication();
+        app.UseAuthorization();
         app.UseSession();
 
         app.UseEndpoints(endpoints =>
