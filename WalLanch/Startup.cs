@@ -6,6 +6,7 @@ using WalLanches.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using WalLanches.Services;
+using ReflectionIT.Mvc.Paging;
 
 
 namespace WalLanches;
@@ -48,6 +49,13 @@ public class Startup
         services.AddScoped(Sp => CarrinhoCompra.GetCarrinho(Sp));
 
         services.AddControllersWithViews();
+
+        services.AddPaging(options =>
+        {
+            options.ViewName = "Bootstrap4";
+            options.PageParameterName = "Pageindex";
+        });
+
         services.AddMemoryCache();
         services.AddSession();
     }
