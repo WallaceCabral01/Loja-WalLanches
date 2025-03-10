@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using WalLanches.Services;
 using ReflectionIT.Mvc.Paging;
+using WalLanches.Areas.Admin.Services;
 
 
 namespace WalLanches;
@@ -19,49 +20,67 @@ public class Startup
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
         services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+             .AddEntityFrameworkStores<AppDbContext>()
+             .AddDefaultTokenProviders();
 
+        services.Configure<ConfigurationImagens>(Configuration.GetSection("ConfigurationPastaImagens"));
 
+        //services.Configure<IdentityOptions>(options =>
+        //{
+        //    // Default Password settings.
+        //    options.Password.RequireDigit = false;
+        //    options.Password.RequireLowercase = false;
+        //    options.Password.RequireNonAlphanumeric = false;
+        //    options.Password.RequireUppercase = false;
+        //    options.Password.RequiredLength = 3;
+        //    options.Password.RequiredUniqueChars = 1;
+        //});
 
         services.AddTransient<ILancheRepository, LancheRepository>();
         services.AddTransient<ICategoriaRepository, CategoriaRepository>();
         services.AddTransient<IPedidoRepository, PedidoRepository>();
         services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
-        services.AddAuthorization(Options =>
+        services.AddScoped<RelatorioVendasService>();
+
+        services.AddAuthorization(options =>
         {
-            Options.AddPolicy("Admin",
+            options.AddPolicy("Admin",
                 politica =>
                 {
                     politica.RequireRole("Admin");
-
-
                 });
         });
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddScoped(Sp => CarrinhoCompra.GetCarrinho(Sp));
+        services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
 
         services.AddControllersWithViews();
 
         services.AddPaging(options =>
         {
             options.ViewName = "Bootstrap4";
-            options.PageParameterName = "Pageindex";
+            options.PageParameterName = "pageindex";
         });
 
         services.AddMemoryCache();
+        //services.AddDistributedMemoryCache();
+
         services.AddSession();
+        //{
+        //    options.IdleTimeout = TimeSpan.FromSeconds(10);
+        //    options.Cookie.HttpOnly = true;
+        //    options.Cookie.IsEssential = true;
+        //});
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISeedUserRoleInitial seedUserRoleInitial)
+    public void Configure(IApplicationBuilder app,
+        IWebHostEnvironment env, ISeedUserRoleInitial seedUserRoleInitial)
     {
         if (env.IsDevelopment())
         {
@@ -70,7 +89,6 @@ public class Startup
         else
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
         app.UseHttpsRedirection();
@@ -80,24 +98,21 @@ public class Startup
 
         //cria os perfis
         seedUserRoleInitial.SeedRoles();
-
-        //Cria os usuarios e atribui ao perfil
+        //cria os usuários e atribui ao perfil
         seedUserRoleInitial.SeedUsers();
 
-       
+        app.UseSession();
+
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseSession();
+
 
         app.UseEndpoints(endpoints =>
         {
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                  name: "areas",
-                  pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}"
-                );
-            });
+            endpoints.MapControllerRoute(
+             name: "areas",
+             pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+
             endpoints.MapControllerRoute(
                name: "categoriaFiltro",
                pattern: "Lanche/{action}/{categoria?}",
