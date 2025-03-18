@@ -22,7 +22,7 @@ namespace WalLanches.Areas.Admin.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {
+        { 
             return View();
         }
 
