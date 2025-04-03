@@ -40,7 +40,7 @@ namespace WalLanches.Models
         [StringLength(200, ErrorMessage = "O {0} deve ter no máximo {1} caracteres")]
         public string ImagemThumbnaiUrl  { get; set; }
 
-        [Display(Name ="Preferido ?")]
+        [Display(Name ="Preferido")]
         public bool IsLanchePreferido  { get; set; }
 
         [Display(Name ="Estoque")]
